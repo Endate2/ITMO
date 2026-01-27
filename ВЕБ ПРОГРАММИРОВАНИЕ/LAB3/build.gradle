@@ -1,0 +1,43 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.1.10'
+    id 'java'
+    id 'war'
+}
+
+group = 'com.worthant.jsfgraph'
+version = '1.0-SNAPSHOT'
+description = 'interactive-graph-ui'
+
+sourceCompatibility = 17
+targetCompatibility = 17
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'jakarta.platform:jakarta.jakartaee-web-api:9.1.0'
+
+    implementation 'org.eclipse.persistence:org.eclipse.persistence.jpa:3.0.2'
+    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation 'org.primefaces:primefaces:12.0.0'
+    implementation 'ch.qos.logback:logback-classic:1.2.9'
+    
+
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+}
+kotlin {
+    jvmToolchain(17)
+}
+
+test {
+    useJUnitPlatform()
+}
+
+war {
+    archiveFileName = 'interactive-graph-ui.war'
+}

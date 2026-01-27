@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>Web Lab 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <h:outputStylesheet library="styles" name="main.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</h:head>
+<h:body>
+
+    <!-- Main container for background -->
+    <h:panelGroup style="background-color: #ffffff; color: #000000; font-family: sans-serif; font-style: normal;" layout="block"
+                  styleClass="bg-custom-light dark:bg-custom-dark backdrop-brightness-95 text-white min-h-screen">
+
+        <!-- Header -->
+        <h:panelGroup layout="block" id="scrollToTop" styleClass="font-sans bg-fixed bg-cover text-black p-3">
+            <!-- Header -->
+            <h:panelGroup layout="block" style="background-color: #c7dada;"  styleClass="bg-slate-300 mt-0.5 custom-grid-sm grid h-14 grid-cols-1 content-center items-center gap-2 rounded-lg border">
+
+                <!-- Header text -->
+                <h:panelGroup layout="block" styleClass="flex justify-center">
+                    <p class="overflow-hidden whitespace-nowrap text-center align-middle text-base font-medium">
+                        WEB LAB3 | CHIMIREV ANTON | P3222 | 9292</p>
+                </h:panelGroup>
+
+                <!-- Time in HH, MM, SS format -->
+                <h:panelGroup layout="block" styleClass="hidden sm:flex sm:justify-end mr-2">
+                    <h:panelGroup layout="block" id="date-time" styleClass="self-center text-right text-base font-medium">
+                        <h:outputText id="date" value="" escape="false" />,
+                        <h:outputText id="time" value="" escape="false" />
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- Date-time container for mobile (below md breakpoint) -->
+            <h:panelGroup layout="block" styleClass="mt-2 flex justify-center rounded-lg border border-white p-2 shadow-lg backdrop-blur sm:hidden">
+                <h:panelGroup layout="block" id="date-time-mobile" styleClass="text-center text-base font-medium">
+                    <h:outputText id="date-mobile" value="" escape="false" />,
+                    <h:outputText id="time-mobile" value="" escape="false" />
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGroup>
+
+        <!-- Background for Graph, Buttons, and Input Form -->
+        <div>
+            <h:panelGroup layout="block" styleClass="content-container">
+
+                <!-- Graph, Buttons, and Input Form -->
+                <h:panelGroup layout="block" id="scrollToGraph"
+                              styleClass="graph-custom-grid-sm mt-5 grid grid-cols-1 gap-6">
+                    <!-- Graph (1st column) -->
+                    <h:panelGroup layout="block"
+                                  styleClass="flex justify-center overflow-auto rounded-lg border border-white dark:border-custom-dark shadow-md backdrop-blur-3xl">
+                        <canvas id="graphCanvas" width="650" height="650" class="graph"/>
+                    </h:panelGroup>
+
+                    <!-- Buttons (2nd column) -->
+                    <h:panelGroup layout="block"
+                                  styleClass="flex flex-row sm:flex-col items-center justify-center gap-4 sm:gap-6">
+                    </h:panelGroup>
+
+                    <!-- Input Form (3rd column) -->
+                    <h:form id="input-form" style="background-color: #c7dada;"  styleClass="input-form">
+                        <!-- X selectOneRadio -->
+                        <h:panelGroup styleClass="flex flex-col gap-2">
+                            <!-- Метка для X -->
+                            <h:outputText id="xValueLabel" styleClass="text-center dark:text-gray-300" value="X: {-3, 5}"/>
+
+                            <h:selectOneRadio id="xSelectRadio" value="#{xCoordinateBean.x}" layout="pageDirection" styleClass="text-center">
+                                <f:selectItem itemValue="-3" itemLabel="-3"/>
+                                <f:selectItem itemValue="-2" itemLabel="-2"/>
+                                <f:selectItem itemValue="-1" itemLabel="-1"/>
+                                <f:selectItem itemValue="0" itemLabel="0"/>
+                                <f:selectItem itemValue="1" itemLabel="1"/>
+                                <f:selectItem itemValue="2" itemLabel="2"/>
+                                <f:selectItem itemValue="3" itemLabel="3"/>
+                                <f:selectItem itemValue="4" itemLabel="4"/>
+                                <f:selectItem itemValue="5" itemLabel="5"/>
+                                <f:validateDoubleRange minimum="-3" maximum="5"/>
+                            </h:selectOneRadio>
+
+                            <!-- Сообщение об ошибке -->
+                            <h:message for="xSelectRadio" styleClass="text-red-500 dark:text-red-800 mt-2 bg-red-100 dark:bg-red-400 p-2 rounded border border-red-400 dark:border-custom-dark"/>
+                        </h:panelGroup>
+
+                        <!-- Y Input -->
+                        <h:panelGroup style="color: #000000;" styleClass="flex flex-col gap-2">
+                            <h:outputLabel style="color: #000000;" for="yValue" value="Y: (-3, 3)"
+                                           styleClass="block text-sm font-medium text-white dark:text-gray-300 text-center"/>
+                            <h:inputText id="yValue" value="#{yCoordinateBean.y}" maxlength="8"
+                                         styleClass="input-text dark:text-gray-200" converter="com.arekalov.CommaToDotConverter">
+                                <f:validateDoubleRange minimum="-3" maximum="3"/>
+                            </h:inputText>
+                            <h:message  for="yValue"
+                                       styleClass="text-red-500 mt-2 bg-red-100 p-2 rounded border border-red-400"/>
+                        </h:panelGroup>
+
+                        <!-- R Slider -->
+                        <h:panelGroup styleClass="flex flex-col gap-2">
+                            <h:outputText id="rValueLabel" styleClass="text-center dark:text-gray-300" value="R: #{rCoordinateBean.r}"/>
+                            <p:slider id="rSlider" minValue="1" maxValue="5" step="1" for="rValue"
+                                      onSlideEnd="updateCanvas(event, ui)"/>
+                            <h:inputText id="rValue" value="#{rCoordinateBean.r}" maxlength="7" styleClass="hidden">
+                                <f:validateDoubleRange minimum="1" maximum="5"/>
+                            </h:inputText>
+                            <h:message for="rValue"
+                                       styleClass="text-red-500 mt-2 bg-red-100 p-2 rounded border border-red-400"/>
+                        </h:panelGroup>
+
+                        <h:commandButton value="Check" styleClass="submit-btn">
+                            <f:ajax execute="@form"
+                                    listener="#{resultsControllerBean.addResult(xCoordinateBean.x, yCoordinateBean.y, rCoordinateBean.r)}"
+                                    render="@form results-table"/>
+                        </h:commandButton>
+                    </h:form>
+                </h:panelGroup>
+            </h:panelGroup>
+        </div>
+
+        <div class="parallax-section">
+            <h:panelGroup layout="block" id="scrollToTable" styleClass="content-container">
+
+                <h:panelGroup layout="block"
+                              styleClass="backdrop-brightness-95 mt-6 rounded-lg border border-white dark:border-custom-dark shadow-md backdrop-blur-3xl">
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <h:dataTable styleClass="data-table" id="results-table" var="result"
+                                     value="#{resultsControllerBean.results}">
+                            <!-- X column -->
+                            <h:column styleClass="column rounded-t-2xl">
+                                <f:facet name="header">
+                                    <h:outputText value="x"/>
+                                </f:facet>
+                                <h:outputText styleClass="text-center" value="#{result.x}"/>
+                            </h:column>
+
+                            <!-- Y column -->
+                            <h:column styleClass="column">
+                                <f:facet name="header">
+                                    <h:outputText value="y"/>
+                                </f:facet>
+                                <h:outputText styleClass="text-center" value="#{result.y}"/>
+                            </h:column>
+
+                            <!-- R column -->
+                            <h:column styleClass="column">
+                                <f:facet name="header">
+                                    <h:outputText value="r"/>
+                                </f:facet>
+                                <h:outputText styleClass="text-center" value="#{result.r}"/>
+                            </h:column>
+
+                            <!-- Hit column -->
+                            <h:column styleClass="column">
+                                <f:facet name="header">
+                                    <h:outputText value="Result"/>
+                                </f:facet>
+                                <h:panelGroup layout="block" styleClass="hit" rendered="#{result.result}">
+                                    <h:outputText value="V"/>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" styleClass="miss" rendered="#{not result.result}">
+                                    <h:outputText value="X"/>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+        </div>
+
+        <!-- Background for Link to index.xhtml -->
+        <div class="parallax-section relative"
+             style="height: 500px;">
+            <h:panelGroup layout="block" styleClass="content-container">
+
+                <!-- Spacing for Parallax Scrolling Effect -->
+                <h:panelGroup layout="block" styleClass="h-80"/>
+
+
+                <div class="home-button-container text-center">
+                    <h:link style="background-color: #c7dada;" value="Go to start page" styleClass="btn-home" outcome="goToIndex">
+                    </h:link>
+                </div>
+
+                <h:panelGroup layout="block" styleClass="h-24"/>
+            </h:panelGroup>
+        </div>
+
+    </h:panelGroup>
+
+    <div id="confirmationPopup" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Delete Points</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">Are you sure you want to delete all points from the database?</p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="cancelBtn" class="px-4 py-2 bg-gray-200 text-black rounded-md"
+                            onclick="hideConfirmationPopup()">Cancel
+                    </button>
+                    <button id="confirmBtn" class="px-4 py-2 bg-red-600 text-white rounded-md"
+                            onclick="deletePoints()">Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h:form id="graph-form">
+        <h:inputHidden id="xGraphValue" value="#{coordinateHandlerBean.x}"/>
+        <h:inputHidden id="yGraphValue" value="#{coordinateHandlerBean.y}"/>
+        <h:commandButton id="handleClick" styleClass="hidden">
+            <f:ajax execute="@form"
+                    listener="#{resultsControllerBean.addResult(coordinateHandlerBean.x, coordinateHandlerBean.y, rCoordinateBean.r)}"
+                    render="@form xGraphValue yGraphValue results-table"/>
+        </h:commandButton>
+    </h:form>
+
+    <h:form id="clear-points">
+        <h:commandButton id="clearPoints" styleClass="hidden">
+            <f:ajax execute="@form"
+                    listener="#{resultsControllerBean.clearResults()}"
+                    render="input-form results-table"/>
+        </h:commandButton>
+    </h:form>
+
+    <h:form id="update-radius">
+        <h:inputHidden id="radius" value="#{rCoordinateBean.r}"/>
+        <h:commandButton id="updateCanvas" styleClass="hidden">
+            <f:ajax execute="@form"
+                    listener="#{resultsControllerBean.updateCanvas(rCoordinateBean.r)}"
+                    render="@form results-table"/>
+        </h:commandButton>
+    </h:form>
+
+    <script type="module" src="./resources/js/canvas-setup.js"></script>
+    <script type="module" src="./resources/js/main.js"></script>
+
+</h:body>
+</html>
