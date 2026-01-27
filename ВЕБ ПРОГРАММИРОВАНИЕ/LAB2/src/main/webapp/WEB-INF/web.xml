@@ -1,0 +1,65 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+  <filter>
+    <filter-name>UserAgentCounterFilter</filter-name>
+    <filter-class>UserAgentCounterFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>UserAgentCounterFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+  <servlet-name>ControllerServlet</servlet-name>
+  <servlet-class>ControllerServlet</servlet-class>
+</servlet>
+
+
+    <servlet-mapping>
+    <servlet-name>ControllerServlet</servlet-name>
+    <url-pattern>/controller</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AreaCheckServlet</servlet-name>
+    <servlet-class>AreaCheckServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>UserAgentStatsServlet</servlet-name>
+    <servlet-class>UserAgentStatsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UserAgentStatsServlet</servlet-name>
+    <url-pattern>/stats</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>AreaCheckServlet</servlet-name>
+    <url-pattern>/checkArea</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ClearServlet</servlet-name>
+    <servlet-class>ClearServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ClearServlet</servlet-name>
+    <url-pattern>/clear</url-pattern>
+  </servlet-mapping>
+
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>
