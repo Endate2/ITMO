@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест на реакцию на цвета</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/tests.css" rel="stylesheet">
+    <style>
+        .stimulus {
+            width: 200px;
+            height: 200px;
+            background-color: #ccc;
+            margin: 20px auto;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin-top: -50px; /* Adjust this value as needed */
+        }
+        .btn-next {
+            margin-top: 20px;
+            display: none; /* Сначала скрыта */
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="../index.php">ITMO Portal</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="navbar-text mr-2"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                    <a href="../pages/logout.php" class="btn btn-outline-dark">Выйти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <h1 class="text-center">Тест на реакцию на цвета</h1>
+        <div class="text-center">
+            <button id="start-button" class="btn btn-primary">Начать тест</button>
+            <div id="stimulus" class="stimulus mt-4"></div>
+            <p id="result" class="mt-3"></p>
+            <!-- Добавленная кнопка для перехода к следующему тесту -->
+            <a href="next_test.html" id="next-test-button" class="btn btn-success btn-next">Следующий тест</a>
+        </div>
+    </div>
+
+    <script>
+                // Пометить уведомление как прочитанное при загрузке теста
+const urlParams = new URLSearchParams(window.location.search);
+const notificationId = urlParams.get('notification_id');
+
+if (notificationId) {
+    // Отправляем запрос на сервер для пометки уведомления как прочитанного
+    fetch(`index.php?mark_as_read=${notificationId}`)
+        .then(response => {
+            if (!response.ok) {
+                console.error('Ошибка при пометке уведомления как прочитанного');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+}
+        document.getElementById('start-button').addEventListener('click', startTest);
+
+        let colorInterval;
+        let startTime;
+        const colors = ['red', 'green', 'blue'];
+        const targetColor = 'green';
+
+        function startTest() {
+            console.log("Тест начат");
+            const stimulus = document.getElementById('stimulus');
+            const result = document.getElementById('result');
+            const nextButton = document.getElementById('next-test-button');
+            result.textContent = '';
+            document.getElementById('start-button').disabled = true;
+            nextButton.style.display = 'none'; // Скрываем кнопку при новом запуске теста
+
+            setTimeout(() => {
+                startTime = Date.now();
+                let colorIndex = 0;
+
+                colorInterval = setInterval(() => {
+                    stimulus.style.backgroundColor = colors[colorIndex];
+                    colorIndex = (colorIndex + 1) % colors.length;
+                }, 1000);
+
+                stimulus.addEventListener('click', () => {
+                    if (stimulus.style.backgroundColor === targetColor) {
+                        const reactionTime = (Date.now() - startTime) / 1000;
+                        result.textContent = `Правильно! Ваше время реакции: ${reactionTime} секунд`;
+                        clearInterval(colorInterval);
+                        stimulus.style.backgroundColor = '#ccc';
+                        document.getElementById('start-button').disabled = false;
+                        result.textContent += " Тест завершён!";
+                        nextButton.style.display = 'inline-block'; // Показываем кнопку после завершения теста
+
+                        // Данные для отправки
+                        const testData = {
+                            user_id: 1, // Замените на реальный ID пользователя
+                            test_name: 'Тест на реакцию на цвета',
+                            reaction_time: reactionTime,
+                            correct_answers: 1, // Пользователь успешно нажал
+                            total_questions: 1, // Один вопрос в тесте
+                            attempts: 1,
+                            average_time: reactionTime // Среднее время равно времени реакции
+                        };
+
+                        saveResult(testData);
+                    } else {
+                        result.textContent = 'Неверный цвет! Попробуйте ещё раз.';
+                    }
+                }, { once: true });
+            }, Math.random() * 2000 + 1000);
+        }
+
+        function saveResult(testData) {
+            fetch('../php/save_test_result.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(testData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка сети: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Результат успешно сохранен в базе данных');
+                } else {
+                    const errorMessage = data.message || 'Неизвестная ошибка';
+                    console.error('Ошибка при сохранении результата:', errorMessage);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке данных:', error);
+            });
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

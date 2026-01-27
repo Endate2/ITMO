@@ -1,0 +1,209 @@
+Данные получены: 
+Данные получены: 
+Данные получены: 
+Данные получены: {"testName":"light_test","reactionTime":0.325}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.325
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.529}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.529
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.343}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.343
+)
+
+Данные получены: {"testName":"sound_test","reactionTime":0.931}
+Данные из JSON: Array
+(
+    [testName] => sound_test
+    [reactionTime] => 0.931
+)
+
+Данные получены: {"testName":"sound_test","reactionTime":3.957}
+Данные из JSON: Array
+(
+    [testName] => sound_test
+    [reactionTime] => 3.957
+)
+
+Данные получены: {"testName":"sound_test","reactionTime":1.15}
+Данные из JSON: Array
+(
+    [testName] => sound_test
+    [reactionTime] => 1.15
+)
+
+Данные получены: {"testName":"color_test","reactionTime":0.88}
+Данные из JSON: Array
+(
+    [testName] => color_test
+    [reactionTime] => 0.88
+)
+
+Данные получены: {"testName":"math_parity_test","reactionTime":0}
+Данные из JSON: Array
+(
+    [testName] => math_parity_test
+    [reactionTime] => 0
+)
+
+Данные получены: {"testName":"math_parity_test","reactionTime":3.284}
+Данные из JSON: Array
+(
+    [testName] => math_parity_test
+    [reactionTime] => 3.284
+)
+
+Данные получены: {"testName":"math_parity_test","reactionTime":3.511}
+Данные из JSON: Array
+(
+    [testName] => math_parity_test
+    [reactionTime] => 3.511
+)
+
+Данные получены: {"testName":"math_parity_test","reactionTime":5.457}
+Данные из JSON: Array
+(
+    [testName] => math_parity_test
+    [reactionTime] => 5.457
+)
+
+Данные получены: {"testName":"math_parity_test","reactionTime":0.001}
+Данные из JSON: Array
+(
+    [testName] => math_parity_test
+    [reactionTime] => 0.001
+)
+
+Данные получены: {"testName":"math_test","reactionTime":2.057}
+Данные из JSON: Array
+(
+    [testName] => math_test
+    [reactionTime] => 2.057
+)
+
+Данные получены: {"testName":"color_test","reactionTime":2.587}
+Данные из JSON: Array
+(
+    [testName] => color_test
+    [reactionTime] => 2.587
+)
+
+Данные получены: {"testName":"color_test","reactionTime":2.541}
+Данные из JSON: Array
+(
+    [testName] => color_test
+    [reactionTime] => 2.541
+)
+
+Данные получены: {"testName":"math_test","reactionTime":4.63}
+Данные из JSON: Array
+(
+    [testName] => math_test
+    [reactionTime] => 4.63
+)
+
+Данные получены: {"testName":"light_test","reactionTime":1.568}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 1.568
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.549}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.549
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.662}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.662
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.577}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.577
+)
+
+Данные получены: {"testName":"light_test","reactionTime":1.02}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 1.02
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.714}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.714
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.892}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.892
+)
+
+Данные получены: {"testName":"combined_operator_test","averageTime":1085,"stdDev":0}
+Данные из JSON: Array
+(
+    [testName] => combined_operator_test
+    [averageTime] => 1085
+    [stdDev] => 0
+)
+
+Данные получены: {"testName":"combined_operator_test","averageTime":1820,"stdDev":1160}
+Данные из JSON: Array
+(
+    [testName] => combined_operator_test
+    [averageTime] => 1820
+    [stdDev] => 1160
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.591}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.591
+)
+
+Данные получены: {"testName":"math_test","reactionTime":2.467}
+Данные из JSON: Array
+(
+    [testName] => math_test
+    [reactionTime] => 2.467
+)
+
+Данные получены: {"testName":"combined_operator_test","averageTime":784,"stdDev":464.17525425927937}
+Данные из JSON: Array
+(
+    [testName] => combined_operator_test
+    [averageTime] => 784
+    [stdDev] => 464.17525425928
+)
+
+Данные получены: {"testName":"light_test","reactionTime":0.454}
+Данные из JSON: Array
+(
+    [testName] => light_test
+    [reactionTime] => 0.454
+)
+

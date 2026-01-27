@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style1.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="../index.php">ITMO Portal</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="btn btn-outline-dark mr-2" href="../index.php">На главную</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-dark" href="pages/registr.html">Войти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5 pt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="login-form">
+                    <h2 class="text-center mb-4">Регистрация</h2>
+                    <form action="register.php" method="POST">
+                        <div class="form-group">
+                            <label for="username">Имя пользователя:</label>
+                            <input type="text" id="username" name="username" class="form-control" placeholder="Введите имя пользователя" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Введите email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Пароль:</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Введите пароль" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+                    </form>
+                    <p class="text-center mt-3">Уже есть аккаунт? <a href="registr.html">Войти</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer bg-light text-dark mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>ITMO Portal</h5>
+                    <p>Ваш портал в мир IT-профессий.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Контакты</h5>
+                    <p>Email: info@itmoportal.ru</p>
+                    <p>Телефон: +7 (999) 123-45-67</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Социальные сети</h5>
+                    <a href="#" class="text-dark">Facebook</a><br>
+                    <a href="#" class="text-dark">Twitter</a><br>
+                    <a href="#" class="text-dark">Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center py-3" style="background-color: rgba(0, 0, 0, 0.05);">
+            © 2024 ITMO Portal. Все права защищены.
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

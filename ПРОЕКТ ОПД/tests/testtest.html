@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест реакции с одним кругом</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding-top: 60px; /* Отступ для фиксированной навигационной панели */
+            min-height: 100vh;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            width: 90%;
+            max-width: 600px;
+        }
+        .speed-display {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto 20px;
+            background-color: #f9f9f9;
+            border-radius: 50%;
+        }
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .speed-value {
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none;
+        }
+        .hit-feedback {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            animation: fadeOut 1s forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        .hit { color: #2ecc71; }
+        .miss { color: #e74c3c; }
+        .save-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .btn-next {
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none; /* Изначально скрыта */
+            text-decoration: none;
+        }
+        .btn-next:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="../index.php">ITMO Portal</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="navbar-text mr-2"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+                    <a href="../pages/logout.php" class="btn btn-outline-dark">Выйти</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <h1>Тест реакции с кругом</h1>
+        <p>Нажимайте пробел, когда шар совпадёт с красной точкой</p>
+        
+        <div class="speed-display">Скорость: <span id="speedValue">2.0</span></div>
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+        
+        <div class="controls">
+            <button id="startButton">Старт</button>
+            <div class="speed-control">
+                <button id="decreaseSpeed">-</button>
+                <button id="increaseSpeed">+</button>
+            </div>
+        </div>
+        
+        <div id="results" class="results">
+            <h3>Результаты</h3>
+            <p>Попытки: <span id="attempts">0</span></p>
+            <p>Попадания: <span id="hits">0</span></p>
+            <p>Среднее время: <span id="avgReaction">0</span>ms</p>
+            <p>Лучшее время: <span id="bestReaction">0</span>ms</p>
+        </div>
+        
+        <!-- Добавленная кнопка для перехода к следующему тесту -->
+        <a href="combined_operator_test.html" id="next-test-button" class="btn-next">Следующий тест</a>
+        
+        <div id="saveStatus" class="save-status"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+                // Пометить уведомление как прочитанное при загрузке теста
+const urlParams = new URLSearchParams(window.location.search);
+const notificationId = urlParams.get('notification_id');
+
+if (notificationId) {
+    // Отправляем запрос на сервер для пометки уведомления как прочитанного
+    fetch(`index.php?mark_as_read=${notificationId}`)
+        .then(response => {
+            if (!response.ok) {
+                console.error('Ошибка при пометке уведомления как прочитанного');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+}
+        // Настройки теста
+        const config = {
+            radius: 120,
+            ballRadius: 15,
+            targetRadius: 8,
+            minSpeed: 0.5,
+            maxSpeed: 5.0,
+            speedStep: 0.5,
+            testDuration: 30000 // 30 секунд
+        };
+
+        // Состояние теста
+        const state = {
+            isRunning: false,
+            speed: 2.0,
+            angle: 0,
+            targetAngle: Math.PI,
+            lastIntersection: null,
+            isIntersecting: false,
+            attempts: 0,
+            hits: 0,
+            reactionTimes: [],
+            animationFrame: null,
+            startTime: null,
+            userId: 1 // Замените на реальный ID пользователя
+        };
+
+        // Элементы DOM
+        const elements = {
+            canvas: document.getElementById('gameCanvas'),
+            ctx: document.getElementById('gameCanvas').getContext('2d'),
+            startButton: document.getElementById('startButton'),
+            decreaseSpeed: document.getElementById('decreaseSpeed'),
+            increaseSpeed: document.getElementById('increaseSpeed'),
+            speedValue: document.getElementById('speedValue'),
+            results: document.getElementById('results'),
+            attempts: document.getElementById('attempts'),
+            hits: document.getElementById('hits'),
+            avgReaction: document.getElementById('avgReaction'),
+            bestReaction: document.getElementById('bestReaction'),
+            saveStatus: document.getElementById('saveStatus'),
+            nextTestButton: document.getElementById('next-test-button')
+        };
+
+        // Инициализация
+        function init() {
+            drawCircle();
+            setupEventListeners();
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            elements.startButton.addEventListener('click', startTest);
+            elements.decreaseSpeed.addEventListener('click', () => changeSpeed(-config.speedStep));
+            elements.increaseSpeed.addEventListener('click', () => changeSpeed(config.speedStep));
+            document.addEventListener('keydown', handleKeyPress);
+        }
+
+        // Изменение скорости
+        function changeSpeed(step) {
+            if (state.isRunning) return;
+            
+            state.speed = Math.max(config.minSpeed, 
+                                Math.min(config.maxSpeed, 
+                                state.speed + step));
+            elements.speedValue.textContent = state.speed.toFixed(1);
+        }
+
+        // Отрисовка круга
+        function drawCircle() {
+            const ctx = elements.ctx;
+            const centerX = elements.canvas.width / 2;
+            const centerY = elements.canvas.height / 2;
+            
+            // Очищаем canvas
+            ctx.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
+            
+            // Рисуем окружность
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, config.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = '#cccccc';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Рисуем целевую точку (красную)
+            const targetX = centerX + Math.cos(state.targetAngle) * config.radius;
+            const targetY = centerY + Math.sin(state.targetAngle) * config.radius;
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, config.targetRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff0000';
+            ctx.fill();
+            
+            // Рисуем шарик
+            const ballX = centerX + Math.cos(state.angle) * config.radius;
+            const ballY = centerY + Math.sin(state.angle) * config.radius;
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, config.ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#3498db';
+            ctx.fill();
+        }
+
+        // Обновление анимации
+        function updateAnimation() {
+            // Обновляем угол
+            state.angle += state.speed * 0.02;
+            if (state.angle > Math.PI * 2) state.angle -= Math.PI * 2;
+            
+            // Проверяем пересечение с целевой точкой
+            const angleDiff = Math.abs(state.angle - state.targetAngle);
+            const normalizedDiff = Math.min(angleDiff, Math.PI * 2 - angleDiff);
+            
+            if (normalizedDiff < 0.1) { // Порог пересечения
+                if (!state.lastIntersection) {
+                    state.lastIntersection = Date.now();
+                    state.isIntersecting = true;
+                }
+            } else {
+                if (state.isIntersecting) {
+                    state.isIntersecting = false;
+                }
+                state.lastIntersection = null;
+            }
+            
+            drawCircle();
+            state.animationFrame = requestAnimationFrame(updateAnimation);
+        }
+
+        // Обработчик нажатия клавиш
+        function handleKeyPress(e) {
+            if (!state.isRunning) return;
+            
+            // Пробел для реакции
+            if (e.key === ' ') {
+                state.attempts++;
+                elements.attempts.textContent = state.attempts;
+                
+                if (state.isIntersecting) {
+                    const reactionTime = Date.now() - state.lastIntersection;
+                    state.hits++;
+                    state.reactionTimes.push(reactionTime);
+                    elements.hits.textContent = state.hits;
+                    
+                    // Обновляем статистику
+                    updateStats();
+                    
+                    showFeedback(true, reactionTime);
+                    state.isIntersecting = false;
+                    state.lastIntersection = null;
+                } else {
+                    showFeedback(false);
+                }
+            }
+            
+            // Стрелки для управления скоростью (если тест не запущен)
+            if (!state.isRunning) {
+                if (e.key === 'ArrowUp') {
+                    changeSpeed(config.speedStep);
+                } else if (e.key === 'ArrowDown') {
+                    changeSpeed(-config.speedStep);
+                }
+            }
+        }
+
+        // Показываем обратную связь
+        function showFeedback(isHit, reactionTime = 0) {
+            const feedback = document.createElement('div');
+            feedback.className = `hit-feedback ${isHit ? 'hit' : 'miss'}`;
+            feedback.textContent = isHit ? `Попал! ${reactionTime}ms` : 'Промах!';
+            
+            // Позиционируем по центру canvas
+            const rect = elements.canvas.getBoundingClientRect();
+            feedback.style.left = `${rect.left + elements.canvas.width/2 - 50}px`;
+            feedback.style.top = `${rect.top + elements.canvas.height/2 - 30}px`;
+            
+            document.body.appendChild(feedback);
+            
+            // Удаляем через 1 секунду
+            setTimeout(() => {
+                feedback.remove();
+            }, 1000);
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            if (state.reactionTimes.length > 0) {
+                const avg = Math.round(state.reactionTimes.reduce((a, b) => a + b, 0) / state.reactionTimes.length);
+                const best = Math.min(...state.reactionTimes);
+                
+                elements.avgReaction.textContent = avg;
+                elements.bestReaction.textContent = best;
+            }
+        }
+
+        // Начало теста
+        function startTest() {
+            if (state.isRunning) return;
+            
+            // Сброс состояния
+            state.isRunning = true;
+            state.angle = 0;
+            state.lastIntersection = null;
+            state.isIntersecting = false;
+            state.attempts = 0;
+            state.hits = 0;
+            state.reactionTimes = [];
+            
+            // Обновление UI
+            elements.startButton.disabled = true;
+            elements.decreaseSpeed.disabled = true;
+            elements.increaseSpeed.disabled = true;
+            elements.results.style.display = 'none';
+            elements.saveStatus.style.display = 'none';
+            elements.nextTestButton.style.display = 'none'; // Скрываем кнопку при начале теста
+            
+            elements.attempts.textContent = '0';
+            elements.hits.textContent = '0';
+            elements.avgReaction.textContent = '0';
+            elements.bestReaction.textContent = '0';
+            
+            // Запуск анимации
+            state.startTime = Date.now();
+            updateAnimation();
+            
+            // Автоматическое завершение через заданное время
+            setTimeout(() => {
+                endTest();
+            }, config.testDuration);
+        }
+
+        // Завершение теста
+        function endTest() {
+            if (!state.isRunning) return;
+            
+            state.isRunning = false;
+            cancelAnimationFrame(state.animationFrame);
+            
+            // Восстановление UI
+            elements.startButton.disabled = false;
+            elements.decreaseSpeed.disabled = false;
+            elements.increaseSpeed.disabled = false;
+            
+            // Показ результатов и кнопки "Следующий тест"
+            elements.results.style.display = 'block';
+            elements.nextTestButton.style.display = 'block'; // Показываем кнопку после завершения теста
+            
+            // Отправка результатов на сервер
+            saveResults();
+        }
+
+        // Функция для отправки результатов
+        function saveResults() {
+            const avgReaction = state.reactionTimes.length > 0 
+                ? Math.round(state.reactionTimes.reduce((a, b) => a + b, 0) / state.reactionTimes.length)
+                : 0;
+            
+            const bestReaction = state.reactionTimes.length > 0
+                ? Math.min(...state.reactionTimes)
+                : 0;
+            
+            const testData = {
+                user_id: state.userId,
+                test_name: 'circle_reaction_test',
+                reaction_time: bestReaction,
+                correct_answers: state.hits,
+                total_questions: state.attempts,
+                attempts: state.attempts,
+                average_time: avgReaction
+            };
+            
+            fetch('../php/save_test_result.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(testData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка сети');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                showSaveStatus(true, data.message || 'Результаты успешно сохранены');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                showSaveStatus(false, error.message || 'Ошибка при сохранении результатов');
+            });
+        }
+
+        // Показать статус сохранения
+        function showSaveStatus(isSuccess, message) {
+            elements.saveStatus.textContent = message;
+            elements.saveStatus.className = `save-status ${isSuccess ? 'success' : 'error'}`;
+            elements.saveStatus.style.display = 'block';
+        }
+
+        // Запуск при загрузке
+        window.onload = init;
+    </script>
+</body>
+</html>
